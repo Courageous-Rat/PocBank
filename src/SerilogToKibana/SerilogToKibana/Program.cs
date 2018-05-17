@@ -19,24 +19,25 @@ namespace SerilogToKibana
 
             while(true)
             {
-                var waitTime = random.Next(1000) * 30;
+                var waitTime = random.Next(1000);
                 Thread.Sleep(waitTime);
-                logger.Information(Guid.NewGuid().ToString());
+                logger.Information(Guid.NewGuid().ToString(), new { Public = "Hello World", Private = "This is a Secret" });
             }
         }
 
         private static LoggerConfiguration CreateSerilogConfiguration()
         {
-            var elasticSearchOptions = new ElasticsearchSinkOptions(new Uri("localhost:9200"))
+            var elasticSearchOptions = new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
             {
                 AutoRegisterTemplate = true,
                 AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
-                
+                CustomFormatter = new CustomElastiFormatter()
             };
 
             return new LoggerConfiguration()
+                .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.Elasticsearch();
+                .WriteTo.Elasticsearch(elasticSearchOptions);
         }
     }
 }
