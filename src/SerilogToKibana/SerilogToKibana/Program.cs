@@ -21,7 +21,7 @@ namespace SerilogToKibana
             {
                 var waitTime = random.Next(1000);
                 Thread.Sleep(waitTime);
-                logger.Information(Guid.NewGuid().ToString(), new { Public = "Hello World", Private = "This is a Secret" });
+                logger.Information(Guid.NewGuid().ToString());
             }
         }
 
@@ -30,7 +30,7 @@ namespace SerilogToKibana
             var elasticSearchOptions = new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
             {
                 AutoRegisterTemplate = true,
-                AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
+                IndexFormat = "custom-logs-{0:yyyy.MM.dd}",
                 CustomFormatter = new CustomElastiFormatter()
             };
 

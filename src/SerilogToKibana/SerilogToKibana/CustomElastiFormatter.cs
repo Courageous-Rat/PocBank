@@ -15,8 +15,15 @@ namespace SerilogToKibana
     {
         public void Format(LogEvent logEvent, TextWriter output)
         {
-            var formatter = new ElasticsearchJsonFormatter();
-            formatter.Format(logEvent, output);
+            var logEntry = new SimpleKibanaLogEntry
+            {
+                Timestamp = logEvent.Timestamp.DateTime,
+                PublicData = logEvent.MessageTemplate.Text,
+                PrivateData = Guid.NewGuid().ToString()
+            };
+
+            var json = JsonConvert.SerializeObject(logEntry);
+            output.Write(json);
         }
     }
 }
